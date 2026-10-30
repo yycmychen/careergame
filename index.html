@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09121f">
+  <title>畢業後第一學期｜香港半工讀生存挑戰</title>
+  <meta name="description" content="供香港中學生試玩的半工讀、升學及職涯規劃互動遊戲。">
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #101e31;
+      --panel-2: #162943;
+      --line: #29415e;
+      --text: #f4f8ff;
+      --muted: #adc0d8;
+      --cyan: #53e4d1;
+      --yellow: #ffd166;
+      --pink: #ff7aa2;
+      --blue: #6ca8ff;
+      --good: #7bea9c;
+      --danger: #ff8a8a;
+      --radius: 20px;
+      --shadow: 0 18px 55px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(83,228,209,.12), transparent 32%),
+        radial-gradient(circle at 90% 16%, rgba(108,168,255,.13), transparent 34%),
+        linear-gradient(180deg, #081424 0%, var(--bg) 68%);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+    .shell { width: min(1120px, calc(100% - 28px)); margin: 0 auto; }
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(7,17,31,.86); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(173,192,216,.14);
+    }
+    .topbar-inner { min-height: 64px; display: flex; align-items: center; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: .02em; }
+    .brand-mark {
+      width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+      color: #07111f; background: linear-gradient(135deg, var(--cyan), var(--yellow));
+      box-shadow: 0 0 30px rgba(83,228,209,.24);
+    }
+    .phase-pill { margin-left: auto; color: var(--muted); font-size: .92rem; }
+    .ghost-btn, .primary-btn, .secondary-btn {
+      border: 0; border-radius: 14px; padding: 12px 18px; font-weight: 850;
+      transition: transform .16s ease, filter .16s ease, background .16s ease;
+    }
+    .primary-btn { color: #051018; background: linear-gradient(135deg, var(--cyan), #83f1c5); }
+    .secondary-btn { color: #07111f; background: var(--yellow); }
+    .ghost-btn { color: var(--text); background: rgba(255,255,255,.07); border: 1px solid var(--line); }
+    .primary-btn:hover, .secondary-btn:hover, .ghost-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+    button:disabled { cursor: not-allowed; opacity: .45; transform: none !important; }
+    main { padding: 40px 0 70px; }
+    .screen { display: none; animation: fade .28s ease; }
+    .screen.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .hero { min-height: calc(100vh - 175px); display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 42px; }
+    .eyebrow { color: var(--cyan); font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 18px; font-size: clamp(2.35rem, 6vw, 5rem); line-height: 1.03; letter-spacing: -.045em; }
+    h1 span { color: var(--yellow); }
+    h2 { font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -.025em; }
+    .lead { color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.25rem); max-width: 680px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+    .hero-card, .panel {
+      background: linear-gradient(145deg, rgba(22,41,67,.92), rgba(13,28,48,.96));
+      border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .hero-card { padding: 24px; transform: rotate(1.3deg); }
+    .hero-card h3 { font-size: 1.4rem; }
+    .mission-list { display: grid; gap: 12px; margin: 18px 0 0; }
+    .mission { display: flex; align-items: center; gap: 12px; padding: 13px; background: rgba(255,255,255,.045); border-radius: 14px; }
+    .mission b { color: var(--yellow); }
+    .notice { margin-top: 18px; padding: 14px 16px; color: #d9e8fa; background: rgba(108,168,255,.09); border-left: 4px solid var(--blue); border-radius: 10px; font-size: .94rem; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+    .section-head p { color: var(--muted); margin-bottom: 0; }
+    .setup-block { margin: 28px 0 36px; }
+    .step-title { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+    .step-no { width: 34px; height: 34px; display: grid; place-items: center; color: #07111f; background: var(--yellow); border-radius: 10px; font-weight: 950; }
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .select-card, .choice-card, .job-card, .strategy-card {
+      text-align: left; color: var(--text); background: var(--panel); border: 2px solid var(--line);
+      border-radius: 18px; padding: 18px; min-height: 142px; transition: .16s ease;
+    }
+    .select-card:hover, .choice-card:hover, .job-card:hover, .strategy-card:hover { transform: translateY(-3px); border-color: var(--blue); }
+    .select-card.selected { border-color: var(--cyan); background: rgba(83,228,209,.09); box-shadow: 0 0 0 4px rgba(83,228,209,.08); }
+    .select-card .icon { display: block; font-size: 2rem; margin-bottom: 10px; }
+    .select-card strong { display: block; font-size: 1.15rem; margin-bottom: 5px; }
+    .select-card small { color: var(--muted); }
+    .course-grid { grid-template-columns: repeat(2, 1fr); }
+    .course-card { min-height: 255px; }
+    .tag { display: inline-flex; padding: 5px 9px; border-radius: 999px; color: var(--cyan); background: rgba(83,228,209,.1); font-size: .8rem; font-weight: 900; }
+    .course-card h3 { margin: 12px 0 8px; }
+    .course-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; color: var(--muted); font-size: .91rem; }
+    .work-grid { grid-template-columns: repeat(4, 1fr); }
+    .work-grid .select-card { min-height: 135px; }
+    .money { color: var(--yellow); font-weight: 900; }
+    .setup-footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px; background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 18px; }
+    .setup-summary { color: var(--muted); }
+    .setup-summary b { color: var(--text); }
+    .game-layout { display: grid; grid-template-columns: 270px 1fr; gap: 22px; align-items: start; }
+    .stats-panel { position: sticky; top: 86px; padding: 18px; }
+    .avatar { display: flex; gap: 12px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+    .avatar-icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 15px; background: rgba(83,228,209,.12); font-size: 1.6rem; }
+    .avatar small { display: block; color: var(--muted); }
+    .stat-list { display: grid; gap: 17px; margin-top: 18px; }
+    .stat-row { display: grid; gap: 7px; }
+    .stat-label { display: flex; justify-content: space-between; gap: 10px; font-size: .9rem; }
+    .bar { height: 9px; overflow: hidden; background: rgba(255,255,255,.08); border-radius: 999px; }
+    .bar > span { display: block; height: 100%; border-radius: inherit; transition: width .35s ease; }
+    .bar-energy { background: var(--pink); }
+    .bar-study { background: var(--blue); }
+    .bar-skill { background: var(--cyan); }
+    .cash-box { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,209,102,.08); border-radius: 13px; }
+    .cash-box strong { color: var(--yellow); font-size: 1.2rem; }
+    .event-panel { padding: clamp(20px, 4vw, 36px); min-height: 590px; }
+    .round-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 26px; }
+    .round-dots { display: flex; gap: 7px; }
+    .round-dot { width: 30px; height: 8px; background: rgba(255,255,255,.1); border-radius: 99px; }
+    .round-dot.done { background: var(--cyan); }
+    .finance-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0 28px; }
+    .finance-item { padding: 12px; background: rgba(255,255,255,.045); border-radius: 13px; }
+    .finance-item small { display: block; color: var(--muted); }
+    .event-title { margin-bottom: 12px; }
+    .event-desc { color: var(--muted); font-size: 1.08rem; max-width: 740px; }
+    .choices { display: grid; gap: 12px; margin-top: 25px; }
+    .choice-card { width: 100%; min-height: 0; display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 14px; }
+    .choice-letter { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; color: #07111f; background: var(--yellow); font-weight: 950; }
+    .choice-card strong { display: block; }
+    .choice-card small { color: var(--muted); }
+    .choice-impact { color: var(--cyan); font-size: .88rem; font-weight: 850; white-space: nowrap; }
+    .prediction-box { margin: 22px 0; padding: 18px; background: rgba(255,209,102,.08); border: 1px solid rgba(255,209,102,.3); border-radius: 16px; }
+    .prediction-box h3 { margin-bottom: 6px; }
+    .prediction-box p { margin-bottom: 13px; color: var(--muted); }
+    .predict-options { display: flex; flex-wrap: wrap; gap: 9px; }
+    .predict-btn { padding: 10px 13px; color: var(--text); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 11px; font-weight: 800; }
+    .predict-btn:hover { border-color: var(--yellow); }
+    .prediction-result { display: none; margin-top: 12px; padding: 11px; border-radius: 11px; background: rgba(255,255,255,.055); }
+    .prediction-result.show { display: block; }
+    .learning-panel { padding: clamp(22px, 5vw, 42px); text-align: center; }
+    .learning-icon { font-size: 3.4rem; margin-bottom: 8px; }
+    .quiz-options { display: grid; gap: 11px; max-width: 720px; margin: 24px auto 0; text-align: left; }
+    .quiz-option { width: 100%; padding: 16px; color: var(--text); background: rgba(255,255,255,.055); border: 2px solid var(--line); border-radius: 14px; font-weight: 800; }
+    .quiz-option:hover { border-color: var(--blue); }
+    .quiz-option.correct { border-color: var(--good); background: rgba(123,234,156,.12); }
+    .quiz-option.wrong { border-color: var(--danger); background: rgba(255,138,138,.1); }
+    .concept-box { display: none; max-width: 720px; margin: 18px auto 0; padding: 16px; text-align: left; background: rgba(83,228,209,.08); border-radius: 14px; }
+    .concept-box.show { display: block; }
+    .learning-score { color: var(--yellow); font-weight: 950; }
+    .feedback { display: none; margin-top: 23px; padding: 18px; background: rgba(83,228,209,.08); border: 1px solid rgba(83,228,209,.3); border-radius: 16px; }
+    .feedback.show { display: block; }
+    .delta-list { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 16px; }
+    .delta { padding: 5px 9px; border-radius: 99px; background: rgba(255,255,255,.08); font-size: .88rem; }
+    .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    .timeline-step { padding: 14px; color: var(--muted); background: rgba(255,255,255,.035); border: 1px solid var(--line); border-radius: 14px; }
+    .timeline-step.active { color: var(--text); border-color: var(--cyan); background: rgba(83,228,209,.08); }
+    .result-hero { padding: 28px; text-align: center; }
+    .result-icon { font-size: 4rem; }
+    .result-hero p { color: var(--muted); max-width: 720px; margin-inline: auto; }
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0 32px; }
+    .result-metric { padding: 16px; text-align: center; background: rgba(255,255,255,.04); border-radius: 14px; }
+    .result-metric strong { display: block; color: var(--yellow); font-size: 1.4rem; }
+    .jobs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .job-card { display: flex; flex-direction: column; }
+    .job-card.locked { opacity: .55; filter: grayscale(.35); }
+    .job-card h3 { margin: 12px 0 8px; }
+    .job-card p { color: var(--muted); flex: 1; }
+    .job-salary { margin-top: 10px; color: var(--yellow); font-size: 1.2rem; font-weight: 950; }
+    .job-requirement { margin-top: 8px; font-size: .88rem; color: var(--muted); }
+    .career-panel { padding: clamp(22px, 4vw, 36px); }
+    .job-banner { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px; margin-bottom: 22px; background: rgba(108,168,255,.09); border-radius: 16px; }
+    .job-banner strong { color: var(--yellow); }
+    .strategy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+    .strategy-card { min-height: 205px; }
+    .strategy-card span { font-size: 2rem; }
+    .strategy-card h3 { margin: 12px 0 8px; }
+    .strategy-card p { color: var(--muted); font-size: .92rem; }
+    .final-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .final-card { padding: 24px; }
+    .report-list { display: grid; gap: 11px; margin: 18px 0; }
+    .report-row { display: flex; justify-content: space-between; gap: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+    .report-row span { color: var(--muted); }
+    .advisor { padding: 17px; background: rgba(83,228,209,.08); border-radius: 15px; }
+    .advisor ul { margin: 10px 0 0; padding-left: 21px; }
+    .worksheet label { display: grid; gap: 6px; margin-bottom: 14px; color: var(--muted); font-weight: 750; }
+    .worksheet input, .worksheet textarea {
+      width: 100%; color: var(--text); background: #091629; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+    }
+    .worksheet textarea { min-height: 88px; resize: vertical; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .source-note { margin-top: 28px; color: var(--muted); font-size: .86rem; }
+    .source-note a { color: var(--cyan); }
+    .toast { position: fixed; left: 50%; bottom: 24px; z-index: 40; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 12px 18px; color: #07111f; background: var(--cyan); border-radius: 12px; font-weight: 900; transition: .2s ease; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 850px) {
+      .hero, .game-layout, .final-layout { grid-template-columns: 1fr; }
+      .hero { padding: 35px 0; }
+      .hero-card { transform: none; }
+      .stats-panel { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .avatar, .stat-list { grid-column: 1 / -1; }
+      .jobs-grid, .strategy-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .card-grid, .course-grid, .work-grid, .finance-strip, .result-grid, .timeline { grid-template-columns: 1fr; }
+      .topbar-inner { min-height: 58px; }
+      .phase-pill { display: none; }
+      .brand span:last-child { font-size: .9rem; }
+      .section-head, .setup-footer, .job-banner { align-items: stretch; flex-direction: column; }
+      .choice-card { grid-template-columns: 38px 1fr; }
+      .choice-impact { grid-column: 2; white-space: normal; }
+      .stats-panel { grid-template-columns: 1fr; }
+      .avatar, .stat-list { grid-column: auto; }
+      .event-panel { min-height: 0; }
+    }
+    @media print {
+      body { background: #fff; color: #111; }
+      .topbar, #finalSummary, .button-row, .source-note { display: none !important; }
+      main, .shell { width: 100%; padding: 0; margin: 0; }
+      .screen { display: none !important; }
+      #finalScreen.active { display: block !important; }
+      .final-layout { display: block; }
+      #worksheetCard { box-shadow: none; border: 1px solid #999; color: #111; background: #fff; }
+      .worksheet input, .worksheet textarea { color: #111; background: #fff; border: 1px solid #777; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand"><span class="brand-mark">HK</span><span>半工讀生存挑戰</span></div>
+      <div class="phase-pill" id="phaseLabel">準備開始</div>
+      <button class="ghost-btn" id="resetTop" type="button">重新開始</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="screen active" id="introScreen">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Career × Money × Real Life</div>
+          <h1>畢業後第一學期<br><span>你撐得住嗎？</span></h1>
+          <p class="lead">你剛剛中六畢業。選一個有興趣的課程，一邊上課、一邊兼職，處理香港生活中的金錢、體力、功課和突發事件。</p>
+          <div class="hero-actions">
+            <button class="primary-btn" id="startBtn" type="button">開始挑戰</button>
+            <button class="ghost-btn" id="howBtn" type="button">遊戲規則</button>
+          </div>
+          <div class="notice">重要：所有課程名稱、薪酬及收支數字均為課堂模擬，不代表任何院校或僱主的保證。真實資料應再到官方網站查證。</div>
+        </div>
+        <aside class="hero-card" aria-label="遊戲目標">
+          <div class="tag">你的任務</div>
+          <h3>不只是「剩下多少錢」</h3>
+          <div class="mission-list">
+            <div class="mission"><span>💰</span><div><b>管理金錢</b><br><small>兼職收入、交通、膳食、學習開支</small></div></div>
+            <div class="mission"><span>🔋</span><div><b>保留體力</b><br><small>加班可以賺錢，但會累</small></div></div>
+            <div class="mission"><span>📚</span><div><b>完成課程</b><br><small>追上功課、作品和考核</small></div></div>
+            <div class="mission"><span>🚀</span><div><b>累積能力</b><br><small>解鎖更多畢業後職位</small></div></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="screen" id="setupScreen">
+      <div class="section-head">
+        <div><div class="eyebrow">建立你的角色</div><h2>先選擇升學路線</h2></div>
+        <p>沒有唯一正確答案。選你最想嘗試的方向。</p>
+      </div>
+
+      <div class="setup-block">
+        <div class="step-title"><span class="step-no">1</span><h3>你較有興趣的方向</h3></div>
+        <div class="card-grid" id="directionCards"></div>
+      </div>
+
+      <div class="setup-block">
+        <div class="step-title"><span class="step-no">2</span><h3>選擇一個模擬課程</h3></div>
+        <div class="card-grid course-grid" id="courseCards"><p class="lead">請先選擇上面的興趣方向。</p></div>
+      </div>
+
+      <div class="setup-block">
+        <div class="step-title"><span class="step-no">3</span><h3>你打算每星期兼職多少小時？</h3></div>
+        <div class="card-grid work-grid" id="workCards"></div>
+      </div>
+
+      <div class="setup-footer">
+        <div class="setup-summary" id="setupSummary">請完成三個選擇。</div>
+        <button class="primary-btn" id="launchBtn" type="button" disabled>進入第一學期</button>
+      </div>
+    </section>
+
+    <section class="screen" id="gameScreen">
+      <div class="game-layout">
+        <aside class="panel stats-panel" aria-label="玩家狀態">
+          <div class="avatar"><div class="avatar-icon" id="avatarIcon">🎓</div><div><strong id="avatarCourse">課程</strong><small id="avatarWork">兼職</small></div></div>
+          <div class="stat-list">
+            <div class="cash-box"><span>💰 現金</span><strong id="moneyStat">$0</strong></div>
+            <div class="stat-row"><div class="stat-label"><span>🔋 體力</span><b id="energyStat">0</b></div><div class="bar"><span class="bar-energy" id="energyBar"></span></div></div>
+            <div class="stat-row"><div class="stat-label"><span>📚 學業進度</span><b id="studyStat">0</b></div><div class="bar"><span class="bar-study" id="studyBar"></span></div></div>
+            <div class="stat-row"><div class="stat-label"><span>🛠️ 職涯能力</span><b id="skillStat">0</b></div><div class="bar"><span class="bar-skill" id="skillBar"></span></div></div>
+            <div class="cash-box"><span>🧾 貸款</span><strong id="debtStat">$0</strong></div>
+            <div class="cash-box"><span>🧠 學習章</span><strong id="learningStat">0/9</strong></div>
+          </div>
+        </aside>
+        <section class="panel event-panel">
+          <div class="round-line"><div><span class="tag" id="roundTag">第一學期</span><h2 id="roundTitle">第1回合</h2></div><div class="round-dots" id="roundDots" aria-label="回合進度"></div></div>
+          <div class="finance-strip" id="financeStrip"></div>
+          <div id="eventArea"></div>
+          <div class="feedback" id="feedbackBox"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="screen" id="graduationScreen">
+      <div class="timeline"><div class="timeline-step active">1 選擇課程</div><div class="timeline-step active">2 半工讀學期</div><div class="timeline-step active">3 畢業結果</div><div class="timeline-step">4 第一份工作</div></div>
+      <section class="panel result-hero" id="graduationResult"></section>
+      <div class="section-head" style="margin-top:34px"><div><div class="eyebrow">職位解鎖</div><h2>你現在可以申請甚麼？</h2></div><p>課程資歷只是其中一項條件。</p></div>
+      <div class="jobs-grid" id="jobsGrid"></div>
+      <p class="source-note">薪酬只作模擬及比較，不是市場報價或入職保證。真實薪酬會受職位、僱主、經驗、工時和市場情況影響。</p>
+    </section>
+
+    <section class="screen" id="careerScreen">
+      <div class="timeline"><div class="timeline-step active">1 選擇課程</div><div class="timeline-step active">2 半工讀學期</div><div class="timeline-step active">3 畢業結果</div><div class="timeline-step active">4 第一份工作</div></div>
+      <section class="panel career-panel">
+        <div class="job-banner" id="jobBanner"></div>
+        <div id="careerEvent"></div>
+      </section>
+    </section>
+
+    <section class="screen" id="finalScreen">
+      <div class="section-head"><div><div class="eyebrow">挑戰完成</div><h2>你的半工讀人生報告</h2></div><p>結果不是標籤，而是一次可以重玩的選擇實驗。</p></div>
+      <div class="final-layout">
+        <section class="panel final-card" id="finalSummary"></section>
+        <section class="panel final-card worksheet" id="worksheetCard">
+          <div class="tag">一頁反思工作紙</div>
+          <h3 style="margin-top:12px">我的遊戲記錄</h3>
+          <label>1. 我選擇的課程<input id="wsCourse" readonly></label>
+          <label>2. 我獲得／選擇的職位<input id="wsJob" readonly></label>
+          <label>3. 哪一次決定最影響我的結果？<textarea id="wsDecision" placeholder="例如：為了加班而沒有完成作品……"></textarea></label>
+          <label>4. 如果重新開始，我會改變甚麼？<textarea id="wsChange" placeholder="例如：每星期只兼職12小時……"></textarea></label>
+          <label>5. 遊戲或AI提供的哪一項資料不能直接相信？為甚麼？<textarea id="wsClaim" placeholder="例如：完成課程後一定月入$25,000，因為……"></textarea></label>
+          <label>6. 我要到哪個官方網站查證甚麼？<textarea id="wsVerify" placeholder="例如：到院校網站查課程入學要求……"></textarea></label>
+          <div class="button-row"><button class="secondary-btn" id="printBtn" type="button">列印工作紙</button><button class="ghost-btn" id="copyPromptBtn" type="button">複製AI反思提示</button><button class="ghost-btn" id="playAgainBtn" type="button">再玩一次</button></div>
+        </section>
+      </div>
+      <p class="source-note">課堂核對入口：<a href="https://www.cspe.edu.hk/tc/ipass/" target="_blank" rel="noreferrer">iPASS專上課程資料</a>、<a href="https://www.wfsfaa.gov.hk/tc/sfo/postsecondary/fasp/overview.php" target="_blank" rel="noreferrer">專上學生資助計劃</a>、<a href="https://www.labour.gov.hk/tc/public/content2_smw.htm" target="_blank" rel="noreferrer">法定最低工資</a>。</p>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const moneyFmt = new Intl.NumberFormat('zh-HK', { style: 'currency', currency: 'HKD', maximumFractionDigits: 0 });
+    const directions = {
+      art: { name: '藝術與設計', icon: '🎨', desc: '視覺、創意媒體、設計與內容製作' },
+      sport: { name: '體育與康樂', icon: '🏀', desc: '教練、康體、健身與活動管理' },
+      game: { name: '遊戲與電競', icon: '🎮', desc: '遊戲製作、數碼媒體、賽事與內容' }
+    };
+
+    const courses = [
+      { id:'art-hd', direction:'art', title:'創意媒體高級文憑', level:'高級文憑｜資歷級別4', icon:'🖌️', duration:'一般約2年', mode:'全日制日間', load:'專門及實作較多', monthlyCost:2550, studyDrift:1, desc:'學習設計軟件、影像製作、專題及作品集。', career:'設計／多媒體助理' },
+      { id:'art-ad', direction:'art', title:'視覺藝術副學士', level:'副學士｜資歷級別4', icon:'🖼️', duration:'一般約2年', mode:'全日制日間', load:'通識與學術基礎較多', monthlyCost:2450, studyDrift:2, desc:'建立藝術、文化及一般技能基礎，並準備升學。', career:'藝術行政／創意助理' },
+      { id:'sport-hd', direction:'sport', title:'運動教練及管理高級文憑', level:'高級文憑｜資歷級別4', icon:'🏃', duration:'一般約2年', mode:'全日制日間', load:'實習及活動課較多', monthlyCost:2500, studyDrift:1, desc:'學習運動訓練、活動策劃、安全及行業實務。', career:'康體／教練助理' },
+      { id:'sport-ad', direction:'sport', title:'健康與體育副學士', level:'副學士｜資歷級別4', icon:'🏅', duration:'一般約2年', mode:'全日制日間', load:'理論與通識基礎較多', monthlyCost:2400, studyDrift:2, desc:'建立健康科學、體育及一般技能基礎，並準備升學。', career:'活動／康樂助理' },
+      { id:'game-hd', direction:'game', title:'遊戲開發高級文憑', level:'高級文憑｜資歷級別4', icon:'🕹️', duration:'一般約2年', mode:'全日制日間', load:'專題製作及技術練習較多', monthlyCost:2600, studyDrift:1, desc:'學習遊戲設計、編程、美術流程及團隊專題。', career:'遊戲測試／製作助理' },
+      { id:'game-ad', direction:'game', title:'數碼媒體副學士', level:'副學士｜資歷級別4', icon:'💻', duration:'一般約2年', mode:'全日制日間', load:'媒體與一般技能並重', monthlyCost:2500, studyDrift:2, desc:'建立數碼媒體、溝通及學術基礎，並準備升學。', career:'數碼內容／活動助理' }
+    ];
+
+    const workProfiles = {
+      8:  { income:1493, energy:-2, study:2, label:'較容易兼顧學業' },
+      12: { income:2240, energy:-4, study:0, label:'收入與時間較平衡' },
+      16: { income:2986, energy:-7, study:-2, label:'開始有過勞風險' },
+      20: { income:3732, energy:-10, study:-4, label:'收入較多，學業風險高' }
+    };
+
+    const commonEvents = {
+      aid: {
+        tag:'現實情報', title:'資助申請期到了', desc:'學費並未在每月生活費中直接扣除，但你需要想辦法處理。遊戲假設你符合基本申請資格；真實結果必須由學生資助處審批。',
+        prediction:{ q:'先估一估：使用貸款後，甚麼會立即增加？', options:['只有收入','現金和欠款','只有學業進度'], answer:1, explain:'貸款會增加目前可用現金，也同時增加將來要償還的欠款。' },
+        choices:[
+          { title:'整理文件，申請入息審查資助', note:'花時間準備；本局模擬成功獲批部分支援', impact:'現金＋｜進度−', effects:{money:2500, energy:-2, study:-2, skill:2}, feedback:'你沒有把「申請」當成「必定成功」，但及早查資料和準備文件通常較有利。' },
+          { title:'使用非入息審查貸款', note:'較快處理眼前需要，但畢業後要還款', impact:'現金＋＋｜貸款＋', effects:{money:5000, debt:5000}, feedback:'貸款增加了目前的現金，但它不是免費收入。之後的選擇仍要考慮還款。' },
+          { title:'暫時不申請，依靠儲蓄及兼職', note:'沒有新增貸款，但現金壓力較大', impact:'體力＋｜現金不變', effects:{energy:3, skill:1}, feedback:'你保留了彈性，但需要留意儲蓄能否支持整個學期。' }
+        ]
+      },
+      shift: {
+        tag:'時間取捨', title:'經理問你可否臨時頂更', desc:'星期六有一更8小時的兼職，同一天也是小組專題的工作日。',
+        prediction:{ q:'先估一估：頂足8小時最可能出現甚麼結果？', options:['只增加收入，其他不變','收入增加，但體力和學業受影響','學業進度反而增加'], answer:1, explain:'兼職收入需要用時間和體力交換，重要功課前的代價通常更明顯。' },
+        choices:[
+          { title:'頂足8小時', note:'收入最高，但缺席小組工作', impact:'＋$345｜進度−−', effects:{money:345, energy:-7, study:-8, skill:-1}, feedback:'收入增加了，但小組進度和合作記錄受影響。' },
+          { title:'只頂4小時，再回校做專題', note:'兩邊兼顧，但行程很趕', impact:'＋$172｜體力−', effects:{money:172, energy:-4, study:2, skill:2}, feedback:'這是折衷方案，但你仍要預留交通和轉換工作的時間。' },
+          { title:'不頂更，完成小組專題', note:'沒有額外收入，學業比較穩定', impact:'進度＋＋｜能力＋', effects:{study:8, skill:4, energy:1}, feedback:'你放棄了短期收入，換取課程成果和合作經驗。' }
+        ]
+      },
+      device: {
+        tag:'突發開支', title:'你的手提電腦突然不能正常開機', desc:'下星期要交功課。維修中心表示可以立即維修，也可以先使用學校設施。',
+        prediction:{ q:'先估一估：使用免費校內設施是否完全沒有成本？', options:['是，免費等於零成本','不是，仍有時間和交通成本','一定比維修更差'], answer:1, explain:'沒有金錢支出不代表沒有成本，交通、等候和開放時間也會影響選擇。' },
+        choices:[
+          { title:'立即付費維修', note:'最方便，但一次過支出較大', impact:'−$1,800｜進度＋', effects:{money:-1800, study:5, energy:1}, feedback:'你用金錢換取時間，但緊急儲備會減少。' },
+          { title:'使用學校電腦室', note:'免費，但要配合開放時間', impact:'現金不變｜體力−', effects:{energy:-4, study:3, skill:2}, feedback:'你找到較低成本的替代方案，但交通和時間成本仍然存在。' },
+          { title:'先借用朋友的電腦', note:'短期解決；要安排好借還時間', impact:'能力＋｜少量壓力', effects:{energy:-2, study:2, skill:3}, feedback:'向人求助也是解難能力，但需要尊重對方的安排和資料私隱。' }
+        ]
+      },
+      opportunity: {
+        tag:'職涯機會', title:'學校舉辦免費行業工作坊', desc:'工作坊與你的方向相關，完成後可以把一項成果加入作品集；但時間與一更兼職重疊。',
+        prediction:{ q:'先估一估：參加相關工作坊的主要長期回報是甚麼？', options:['即時獲得固定高薪','增加能力和作品證據','保證獲聘'], answer:1, explain:'工作坊不能保證工作或薪酬，但可以增加與職位相關的能力和成果證據。' },
+        choices:[
+          { title:'參加工作坊，放棄一更兼職', note:'短期少了收入，能力提升較多', impact:'−$345｜能力＋＋', effects:{money:-345, skill:10, study:5, energy:-2}, feedback:'你把時間投放到未來職位需要的能力和作品。' },
+          { title:'繼續兼職', note:'保留收入，不增加作品', impact:'＋$345｜能力不變', effects:{money:345, energy:-4}, feedback:'這個選擇可能合理，尤其現金緊張；但要另找時間建立相關經驗。' },
+          { title:'先詢問有沒有錄影或下一場', note:'結果未必成功，但主動尋找替代方案', impact:'能力＋｜體力＋', effects:{skill:5, energy:2, study:1}, feedback:'你沒有假設只有兩個極端選項，主動溝通可能創造第三條路。' }
+        ]
+      },
+      final: {
+        tag:'畢業關卡', title:'最後作品／考核只剩兩星期', desc:'你仍差一部分才能完成，同時兼職店舖進入繁忙期。這次選擇會直接影響畢業結果。',
+        prediction:{ q:'先估一估：考核前同時大量加班和趕功課，最大的風險是甚麼？', options:['兩邊都可能做不好','一定能賺錢又完成課程','只會影響交通費'], answer:0, explain:'時間和體力有限；同時把兩件事推到極限，出錯及過勞風險都會增加。' },
+        choices:[
+          { title:'連續加班，晚上再趕功課', note:'現金增加，但出錯及過勞風險最高', impact:'＋$690｜體力−−｜進度−', effects:{money:690, energy:-13, study:-4, skill:1}, feedback:'同時把兩件事做到極限，不一定等於兩件事都做好。' },
+          { title:'減少兩星期兼職，集中完成考核', note:'犧牲短期收入，保住課程成果', impact:'−$690｜進度＋＋', effects:{money:-690, energy:3, study:14, skill:6}, feedback:'你為一個清楚的限期重新分配資源。' },
+          { title:'向導師說明情況並制定補交計劃', note:'不是免做，而是把工作拆成可完成步驟', impact:'進度＋｜能力＋', effects:{energy:-1, study:8, skill:8}, feedback:'求助和制定計劃是職場能力，不代表逃避責任。' }
+        ]
+      }
+    };
+
+    const directionEvents = {
+      art: { tag:'藝術專屬事件', title:'作品集需要印刷和整理', desc:'面試及評核前，你需要準備作品集。怎樣處理才最適合現在的情況？', prediction:{ q:'先估一估：作品集最重要的是甚麼？', options:['放入最多作品','只使用最昂貴印刷','針對職位整理相關成果'], answer:2, explain:'作品集重點是讓別人容易看見與目標職位相關的能力，不是越多或越貴越好。' }, choices:[
+        { title:'使用高質印刷及全新物料', note:'展示效果最好，但成本最高', impact:'−$1,200｜能力＋', effects:{money:-1200, skill:7, study:4}, feedback:'作品呈現很重要，但昂貴不一定等於適合；內容和說明同樣重要。' },
+        { title:'精選作品，使用校內印刷', note:'控制成本並集中展示最相關作品', impact:'−$250｜能力＋＋', effects:{money:-250, skill:10, study:5, energy:-2}, feedback:'你用「針對性」代替「全部都放」，這也適用於CV。' },
+        { title:'只交未整理的電子檔', note:'最省錢，但閱讀和展示效果較弱', impact:'現金不變｜進度−', effects:{study:-3, skill:2, energy:2}, feedback:'作品本身可能不差，但沒有整理會令別人難以看見你的能力。' }
+      ]},
+      sport: { tag:'體育專屬事件', title:'有一個急救及運動安全工作坊', desc:'完成工作坊可增加相關知識，但星期日原本安排了兼職。', prediction:{ q:'先估一估：參加證書或工作坊前應先做甚麼？', options:['立即付款','核對用途、費用和資助','只問AI是否值得'], answer:1, explain:'先查清楚課程是否認可、是否切合目標，以及有沒有校內資助，才決定是否付費。' }, choices:[
+        { title:'自費參加並放棄一更兼職', note:'成本較高，但與方向直接相關', impact:'−$845｜能力＋＋', effects:{money:-845, skill:12, energy:-3, study:4}, feedback:'你投資在與目標職位直接相關的能力，但要確保不會影響基本生活。' },
+        { title:'詢問學校有沒有資助名額', note:'需要主動查詢，遊戲模擬獲部分資助', impact:'−$200｜能力＋＋', effects:{money:-200, skill:10, energy:-2, study:3}, feedback:'先查詢資助和校內資源，可降低學習成本。' },
+        { title:'照常兼職，稍後再找免費資源', note:'保留收入，但必須真的安排後續行動', impact:'＋$345｜能力＋', effects:{money:345, skill:3, energy:-3}, feedback:'延後並非放棄，但你需要把「稍後」變成具體日期。' }
+      ]},
+      game: { tag:'遊戲專屬事件', title:'同學邀請你參加48小時遊戲製作活動', desc:'這是建立團隊作品的機會，但會非常疲累，也會與兼職時間重疊。', prediction:{ q:'先估一估：這類活動對求職最有用的成果是甚麼？', options:['參加活動的興趣','可展示的作品和合作證據','熬夜的時數'], answer:1, explain:'僱主較容易理解具體作品、分工和合作證據，而不只是「我有參加」。' }, choices:[
+        { title:'全程參加，暫停一更兼職', note:'獲得完整團隊經驗，但體力消耗大', impact:'−$345｜能力＋＋｜體力−', effects:{money:-345, skill:13, energy:-9, study:5}, feedback:'短期活動能建立作品和合作證據，但休息安排同樣重要。' },
+        { title:'只參加其中一天', note:'能力和體力之間的折衷', impact:'能力＋｜體力−', effects:{skill:8, energy:-5, study:3}, feedback:'你設定了可承受的參與範圍，仍然能累積部分經驗。' },
+        { title:'不參加，自己完成一個小型作品', note:'較少團隊經驗，但可以控制時間', impact:'能力＋｜進度＋', effects:{skill:6, study:6, energy:-2}, feedback:'個人作品也有價值，但之後仍需要尋找合作經驗。' }
+      ]}
+    };
+
+    const jobSets = {
+      art:[
+        { tier:1, icon:'🗂️', title:'店務／行政助理', salary:[14500,17500], desc:'入職要求較一般，與藝術方向的連繫較少。', req:'不要求相關專上資歷' },
+        { tier:2, icon:'🎨', title:'初級設計／創意助理', salary:[16000,20500], desc:'協助製作社交媒體、圖像或簡單多媒體內容。', req:'相關課程或可展示的作品' },
+        { tier:3, icon:'✨', title:'初級多媒體設計師', salary:[18500,24000], desc:'參與較完整的設計及多媒體項目。', req:'完成課程＋較完整作品集＋技能證據' }
+      ],
+      sport:[
+        { tier:1, icon:'🧾', title:'場地／顧客服務助理', salary:[14500,17500], desc:'處理場地、顧客及一般運作。', req:'不要求相關專上資歷' },
+        { tier:2, icon:'🏟️', title:'康體／活動助理', salary:[16000,20500], desc:'協助活動、場地、安全及參加者安排。', req:'相關課程或活動經驗' },
+        { tier:3, icon:'🏅', title:'初級教練／項目助理', salary:[18000,23500], desc:'協助訓練、項目策劃及參加者進度。', req:'完成課程＋相關技能／證書＋實務經驗' }
+      ],
+      game:[
+        { tier:1, icon:'🎫', title:'店務／電競活動助理', salary:[14500,18000], desc:'協助現場運作、顧客及基本活動工作。', req:'不要求相關專上資歷' },
+        { tier:2, icon:'🧪', title:'遊戲測試／製作助理', salary:[16500,21500], desc:'測試功能、記錄問題及支援製作流程。', req:'相關課程或可展示的遊戲經驗' },
+        { tier:3, icon:'🚀', title:'初級遊戲／互動媒體製作員', salary:[19000,25000], desc:'參與遊戲、互動內容或數碼媒體製作。', req:'完成課程＋技術能力＋團隊作品' }
+      ]
+    };
+
+    const careerEvents = [
+      { title:'入職第1個月：試用期任務', desc:'主管交給你一項不熟悉的工作，明天下午前要完成。', choices:[
+        { title:'假裝明白，自己做到最後一刻', note:'可能保持面子，但風險較高', effects:{energy:-7, skill:1}, feedback:'沒有及早澄清要求，返工時間增加了，成果仍可能不符合需要。' },
+        { title:'先列出已知和未知，再向主管確認', note:'展示準備，也減少誤解', effects:{energy:-2, skill:8, study:2}, feedback:'職場求助不是只說「我不懂」，而是先整理問題。' },
+        { title:'找同事代做', note:'短期完成，但自己沒有學會', effects:{money:-300, skill:-2, energy:1}, feedback:'任務完成了，但你的能力和信任沒有同步增加。' }
+      ]},
+      { title:'入職第2個月：第一次穩定出糧', desc:'支付基本生活及家庭開支後，你仍有一部分可用收入。', choices:[
+        { title:'先建立$2,000緊急儲備', note:'短期少了可花的錢，抗風險能力增加', effects:{money:-2000, skill:3}, reserve:2000, feedback:'緊急儲備不會令你立即變富，但能減少突發開支帶來的衝擊。' },
+        { title:'購買與工作相關的工具／課程', note:'先確認真的會使用，而不是只因廣告購買', effects:{money:-1500, skill:8, energy:-2}, feedback:'有效進修應對應實際工作需要，並留下完成證據。' },
+        { title:'全部用於娛樂和購物', note:'即時開心，但沒有保留緩衝', effects:{money:-2500, energy:7}, feedback:'享受收入沒有錯，但全部花掉會令下一個突發事件更難處理。' }
+      ]},
+      { title:'入職第3個月：下一步發展', desc:'工作開始熟習。你準備怎樣增加一年後的職位選擇？', choices:[
+        { title:'主動完成一個可展示的小項目', note:'建立作品／成果證據', effects:{skill:12, energy:-5, study:3}, feedback:'成果證據能讓CV不只寫「我有興趣」或「我懂」。' },
+        { title:'只接更多加班', note:'短期收入增加，但能力增長有限', effects:{money:1800, energy:-9, skill:2}, feedback:'加班可以解決部分短期需要，但不一定增加下一份工作的選擇。' },
+        { title:'找一項針對弱項的短期進修', note:'先比較官方資料、費用和實際用途', effects:{money:-1200, skill:10, energy:-3, study:2}, feedback:'針對弱項的進修通常比「甚麼都學一點」更有方向。' }
+      ]}
+    ];
+
+    const learningChecks = {
+      2: {
+        icon:'🤖', tag:'AI資料真假關卡',
+        title:'AI說：「完成這個課程後，一定可以月入$25,000。」',
+        question:'你應該怎樣處理這個答案？',
+        options:['AI說得很肯定，所以可以直接相信','到院校、官方統計和實際招聘資料查證','再問另一個AI，兩個AI相同就代表真實'],
+        answer:1,
+        concept:'課程網站可以證明課程內容及入學要求，但不能保證畢業後的職位或薪酬。AI的肯定語氣也不是證據。',
+        takeaway:'我學會：AI答案需要查來源，課程不等於薪酬保證。'
+      },
+      4: {
+        icon:'🔎', tag:'課程查證關卡',
+        title:'你想確認課程是否經本地評審及屬於甚麼資歷級別。',
+        question:'哪一個資料來源最適合？',
+        options:['短片留言區','院校官方網站、iPASS或資歷名冊','同學轉發的截圖'],
+        answer:1,
+        concept:'AI可以協助整理搜尋字，但課程名稱、資歷級別、學費和收生要求應回到官方頁面核對。',
+        takeaway:'我學會：不同資料要找相應的官方來源。'
+      },
+      6: {
+        icon:'🎯', tag:'職涯概念關卡',
+        title:'兩位學生完成了相同課程，但求職結果不同。',
+        question:'最合理的解釋是甚麼？',
+        options:['課程資歷完全沒有用','僱主還會考慮技能、作品、經驗和面試','人工只由運氣決定'],
+        answer:1,
+        concept:'課程可以增加知識、資歷和職位選擇，但學生仍需要把能力轉化成作品、經驗和CV證據。',
+        takeaway:'我學會：資歷＋能力＋成果證據，才較能增加職位選擇。'
+      }
+    };
+
+    let state = {};
+    const screens = [...document.querySelectorAll('.screen')];
+    const $ = (id) => document.getElementById(id);
+    const clamp = (n) => Math.max(0, Math.min(100, n));
+    const getCourse = () => courses.find(c => c.id === state.courseId);
+
+    function freshState() {
+      return { direction:null, courseId:null, workHours:null, round:0, careerRound:0, money:5000, energy:72, study:54, skill:24, debt:0, reserve:0, history:[], selectedJob:null, graduation:null, learningCorrect:0, learningAnswered:0, predictionDone:false };
+    }
+
+    function showScreen(id, label) {
+      screens.forEach(s => s.classList.toggle('active', s.id === id));
+      $('phaseLabel').textContent = label;
+      window.scrollTo({ top:0, behavior:'smooth' });
+    }
+
+    function renderSetup() {
+      $('directionCards').innerHTML = Object.entries(directions).map(([id,d]) => `
+        <button class="select-card ${state.direction===id?'selected':''}" data-direction="${id}" type="button">
+          <span class="icon">${d.icon}</span><strong>${d.name}</strong><small>${d.desc}</small>
+        </button>`).join('');
+      document.querySelectorAll('[data-direction]').forEach(btn => btn.addEventListener('click', () => {
+        state.direction = btn.dataset.direction; state.courseId = null; renderSetup();
+      }));
+
+      const filtered = courses.filter(c => c.direction === state.direction);
+      $('courseCards').innerHTML = filtered.length ? filtered.map(c => `
+        <button class="select-card course-card ${state.courseId===c.id?'selected':''}" data-course="${c.id}" type="button">
+          <span class="tag">${c.level}</span><h3>${c.icon} ${c.title}</h3><small>${c.desc}</small>
+          <div class="course-meta"><span>⏱ ${c.duration}</span><span>🏫 ${c.mode}</span><span>📖 ${c.load}</span><span>🎯 ${c.career}</span></div>
+        </button>`).join('') : '<p class="lead">請先選擇上面的興趣方向。</p>';
+      document.querySelectorAll('[data-course]').forEach(btn => btn.addEventListener('click', () => { state.courseId = btn.dataset.course; renderSetup(); }));
+
+      $('workCards').innerHTML = Object.entries(workProfiles).map(([hours,w]) => `
+        <button class="select-card ${Number(state.workHours)===Number(hours)?'selected':''}" data-hours="${hours}" type="button">
+          <strong>每週 ${hours} 小時</strong><span class="money">模擬月入 ${moneyFmt.format(w.income)}</span><small>${w.label}</small>
+        </button>`).join('');
+      document.querySelectorAll('[data-hours]').forEach(btn => btn.addEventListener('click', () => { state.workHours = Number(btn.dataset.hours); renderSetup(); }));
+
+      const ready = state.direction && state.courseId && state.workHours;
+      $('launchBtn').disabled = !ready;
+      if (ready) {
+        const c = getCourse();
+        $('setupSummary').innerHTML = `<b>${directions[state.direction].name}</b> · ${c.title} · 每週兼職 <b>${state.workHours} 小時</b>`;
+      } else $('setupSummary').textContent = '請完成三個選擇。';
+    }
+
+    function updateStats() {
+      $('moneyStat').textContent = moneyFmt.format(state.money);
+      $('moneyStat').style.color = state.money < 0 ? 'var(--danger)' : 'var(--yellow)';
+      $('energyStat').textContent = Math.round(state.energy);
+      $('studyStat').textContent = Math.round(state.study);
+      $('skillStat').textContent = Math.round(state.skill);
+      $('energyBar').style.width = `${clamp(state.energy)}%`;
+      $('studyBar').style.width = `${clamp(state.study)}%`;
+      $('skillBar').style.width = `${clamp(state.skill)}%`;
+      $('debtStat').textContent = moneyFmt.format(state.debt);
+      $('learningStat').textContent = `${state.learningCorrect}/9`;
+    }
+
+    function getRoundEvent(round) {
+      if (round === 1) return commonEvents.aid;
+      if (round === 2) return commonEvents.shift;
+      if (round === 3) return directionEvents[state.direction];
+      if (round === 4) return commonEvents.device;
+      if (round === 5) return commonEvents.opportunity;
+      return commonEvents.final;
+    }
+
+    function beginRound() {
+      if (state.round >= 6) return showGraduation();
+      state.round += 1;
+      const c = getCourse();
+      const w = workProfiles[state.workHours];
+      const support = 800;
+      const expenses = c.monthlyCost;
+      state.money += w.income + support - expenses;
+      state.energy = clamp(state.energy + w.energy + 3);
+      state.study = clamp(state.study + w.study + c.studyDrift + 3);
+      state.skill = clamp(state.skill + 2);
+      renderRound(getRoundEvent(state.round), { income:w.income, support, expenses });
+    }
+
+    function renderRound(event, finance) {
+      showScreen('gameScreen', `第一學期 · 回合 ${state.round}/6`);
+      state.predictionDone = false;
+      const c = getCourse();
+      $('avatarIcon').textContent = c.icon;
+      $('avatarCourse').textContent = c.title;
+      $('avatarWork').textContent = `每週兼職 ${state.workHours} 小時`;
+      $('roundTitle').textContent = `第 ${state.round} 回合`;
+      $('roundDots').innerHTML = Array.from({length:6}, (_,i) => `<span class="round-dot ${i < state.round ? 'done':''}"></span>`).join('');
+      $('financeStrip').innerHTML = `
+        <div class="finance-item"><small>本月兼職收入</small><strong>＋${moneyFmt.format(finance.income)}</strong></div>
+        <div class="finance-item"><small>模擬家庭／生活支援</small><strong>＋${moneyFmt.format(finance.support)}</strong></div>
+        <div class="finance-item"><small>交通、膳食、電話及學習開支</small><strong>−${moneyFmt.format(finance.expenses)}</strong></div>`;
+      $('eventArea').innerHTML = `<span class="tag">${event.tag}</span><h2 class="event-title">${event.title}</h2><p class="event-desc">${event.desc}</p>
+        <div class="prediction-box"><span class="tag">先預測，再決定</span><h3>${event.prediction.q}</h3><p>先選一個答案，才會開放下面的決定。</p><div class="predict-options">${event.prediction.options.map((op,i)=>`<button class="predict-btn" data-predict="${i}" type="button">${op}</button>`).join('')}</div><div class="prediction-result" id="predictionResult"></div></div>
+        <div class="choices">${event.choices.map((ch,i)=>`
+        <button class="choice-card" data-choice="${i}" type="button" disabled><span class="choice-letter">${String.fromCharCode(65+i)}</span><span><strong>${ch.title}</strong><small>${ch.note}</small></span><span class="choice-impact">${ch.impact}</span></button>`).join('')}</div>`;
+      $('feedbackBox').classList.remove('show');
+      $('feedbackBox').innerHTML = '';
+      document.querySelectorAll('[data-predict]').forEach(btn => btn.addEventListener('click', () => answerPrediction(event, Number(btn.dataset.predict))));
+      document.querySelectorAll('[data-choice]').forEach(btn => btn.addEventListener('click', () => chooseRound(event, Number(btn.dataset.choice))));
+      updateStats();
+    }
+
+    function answerPrediction(event, index) {
+      if (state.predictionDone) return;
+      state.predictionDone = true;
+      state.learningAnswered += 1;
+      const correct = index === event.prediction.answer;
+      if (correct) state.learningCorrect += 1;
+      document.querySelectorAll('[data-predict]').forEach((btn,i) => {
+        btn.disabled = true;
+        if (i === event.prediction.answer) btn.style.borderColor = 'var(--good)';
+      });
+      document.querySelectorAll('[data-choice]').forEach(btn => btn.disabled = false);
+      const box = $('predictionResult');
+      box.innerHTML = `<strong>${correct?'✓ 預測合理':'再想一想'}</strong>　${event.prediction.explain}`;
+      box.classList.add('show');
+      updateStats();
+    }
+
+    function deltaText(effects) {
+      const labels = {money:'現金', energy:'體力', study:'學業', skill:'能力', debt:'貸款'};
+      return Object.entries(effects).filter(([,v])=>v).map(([k,v]) => `<span class="delta">${labels[k]} ${v>0?'+':''}${k==='money'||k==='debt'?moneyFmt.format(v):v}</span>`).join('');
+    }
+
+    function applyEffects(e) {
+      state.money += e.money || 0; state.energy = clamp(state.energy + (e.energy || 0)); state.study = clamp(state.study + (e.study || 0)); state.skill = clamp(state.skill + (e.skill || 0)); state.debt += e.debt || 0;
+    }
+
+    function chooseRound(event, index) {
+      const choice = event.choices[index]; applyEffects(choice.effects);
+      state.history.push({ phase:'study', round:state.round, event:event.title, choice:choice.title, feedback:choice.feedback });
+      document.querySelectorAll('[data-choice]').forEach(b => b.disabled = true);
+      $('feedbackBox').innerHTML = `<strong>你的選擇：${choice.title}</strong><div class="delta-list">${deltaText(choice.effects)}</div><p>${choice.feedback}</p><button class="primary-btn" id="nextRoundBtn" type="button">${learningChecks[state.round]?'進入學習關卡':state.round===6?'查看畢業結果':'下一回合'}</button>`;
+      $('feedbackBox').classList.add('show');
+      $('nextRoundBtn').addEventListener('click', advanceStudyFlow); updateStats();
+    }
+
+    function advanceStudyFlow() {
+      if (learningChecks[state.round]) showLearningCheck(learningChecks[state.round]);
+      else beginRound();
+    }
+
+    function showLearningCheck(check) {
+      $('phaseLabel').textContent = `學習關卡 · ${state.round/2}/3`;
+      $('roundTitle').textContent = '停一停，想一想';
+      $('financeStrip').innerHTML = '';
+      $('feedbackBox').classList.remove('show');
+      $('eventArea').innerHTML = `<div class="learning-panel"><div class="learning-icon">${check.icon}</div><span class="tag">${check.tag}</span><h2 style="margin-top:12px">${check.title}</h2><p class="event-desc" style="margin-inline:auto">${check.question}</p><div class="quiz-options">${check.options.map((op,i)=>`<button class="quiz-option" data-quiz="${i}" type="button">${String.fromCharCode(65+i)}. ${op}</button>`).join('')}</div><div class="concept-box" id="conceptBox"></div></div>`;
+      document.querySelectorAll('[data-quiz]').forEach(btn => btn.addEventListener('click', () => answerLearningCheck(check, Number(btn.dataset.quiz))));
+    }
+
+    function answerLearningCheck(check, index) {
+      state.learningAnswered += 1;
+      const correct = index === check.answer;
+      if (correct) state.learningCorrect += 1;
+      document.querySelectorAll('[data-quiz]').forEach((btn,i) => {
+        btn.disabled = true;
+        if (i === check.answer) btn.classList.add('correct');
+        else if (i === index) btn.classList.add('wrong');
+      });
+      state.history.push({ phase:'learning', round:state.round, event:check.tag, choice:check.options[index], feedback:check.takeaway });
+      const box = $('conceptBox');
+      box.innerHTML = `<strong>${correct?'✓ 答對了':'答案不是這一項'}</strong><p>${check.concept}</p><p class="learning-score">${check.takeaway}</p><button class="primary-btn" id="continueLearningBtn" type="button">${state.round===6?'查看畢業結果':'繼續遊戲'}</button>`;
+      box.classList.add('show');
+      $('continueLearningBtn').addEventListener('click', beginRound);
+      updateStats();
+    }
+
+    function graduationStatus() {
+      if (state.study >= 65 && state.energy > 8) return { key:'complete', icon:'🎓', title:'按時完成課程', text:'你完成了主要考核，取得模擬課程資歷。接下來要用能力和作品證明自己。' };
+      if (state.study >= 48) return { key:'delay', icon:'📝', title:'需要補交後完成', text:'你仍有機會完成，但要補交部分成果，求職時間會稍為延後。' };
+      return { key:'delay', icon:'🧭', title:'延遲完成課程', text:'你的學業進度不足，需要重新安排兼職、休息和補交計劃。這不是終點，但會影響目前可選職位。' };
+    }
+
+    function isJobUnlocked(job) {
+      if (job.tier === 1) return true;
+      if (job.tier === 2) return state.graduation.key === 'complete' || state.skill >= 52;
+      return state.graduation.key === 'complete' && state.skill >= 68 && state.study >= 65;
+    }
+
+    function showGraduation() {
+      state.graduation = graduationStatus();
+      showScreen('graduationScreen', '畢業及求職');
+      $('graduationResult').innerHTML = `<div class="result-icon">${state.graduation.icon}</div><div class="tag">畢業結果</div><h2>${state.graduation.title}</h2><p>${state.graduation.text}</p><div class="result-grid"><div class="result-metric"><span>學業進度</span><strong>${Math.round(state.study)}</strong></div><div class="result-metric"><span>職涯能力</span><strong>${Math.round(state.skill)}</strong></div><div class="result-metric"><span>剩餘現金</span><strong>${moneyFmt.format(state.money)}</strong></div></div>`;
+      $('jobsGrid').innerHTML = jobSets[state.direction].map((job,i) => {
+        const open = isJobUnlocked(job);
+        return `<button class="job-card ${open?'':'locked'}" data-job="${i}" type="button" ${open?'':'disabled'}><span class="tag">${open?`第${job.tier}級職位`:'尚未解鎖'}</span><h3>${job.icon} ${job.title}</h3><p>${job.desc}</p><div class="job-salary">模擬月薪 ${moneyFmt.format(job.salary[0])}–${moneyFmt.format(job.salary[1])}</div><div class="job-requirement">需要：${job.req}</div></button>`;
+      }).join('');
+      document.querySelectorAll('[data-job]').forEach(btn => btn.addEventListener('click', () => selectJob(Number(btn.dataset.job))));
+    }
+
+    function selectJob(index) {
+      state.selectedJob = jobSets[state.direction][index];
+      state.salary = Math.round((state.selectedJob.salary[0] + state.selectedJob.salary[1]) / 2 / 100) * 100;
+      state.careerRound = 0;
+      showScreen('careerScreen', '第一份工作');
+      $('jobBanner').innerHTML = `<div><span class="tag">你接受了職位</span><h2 style="margin:10px 0 0">${state.selectedJob.icon} ${state.selectedJob.title}</h2></div><div><small>遊戲採用的模擬月薪</small><br><strong>${moneyFmt.format(state.salary)}</strong></div>`;
+      beginCareerRound();
+    }
+
+    function beginCareerRound() {
+      if (state.careerRound >= careerEvents.length) return showFinal();
+      state.careerRound += 1;
+      state.money += state.salary - 9500;
+      state.energy = clamp(state.energy + 8);
+      const event = careerEvents[state.careerRound - 1];
+      $('careerEvent').innerHTML = `<span class="tag">工作階段 ${state.careerRound}/3</span><h2 style="margin-top:12px">${event.title}</h2><p class="event-desc">${event.desc}</p><div class="finance-strip"><div class="finance-item"><small>模擬月薪</small><strong>＋${moneyFmt.format(state.salary)}</strong></div><div class="finance-item"><small>交通、膳食、家庭及生活開支</small><strong>−${moneyFmt.format(9500)}</strong></div><div class="finance-item"><small>目前現金</small><strong>${moneyFmt.format(state.money)}</strong></div></div><div class="choices">${event.choices.map((ch,i)=>`<button class="choice-card" data-career-choice="${i}" type="button"><span class="choice-letter">${String.fromCharCode(65+i)}</span><span><strong>${ch.title}</strong><small>${ch.note}</small></span></button>`).join('')}</div><div class="feedback" id="careerFeedback"></div>`;
+      document.querySelectorAll('[data-career-choice]').forEach(btn => btn.addEventListener('click', () => chooseCareer(event, Number(btn.dataset.careerChoice))));
+    }
+
+    function chooseCareer(event, index) {
+      const choice = event.choices[index]; applyEffects(choice.effects); if (choice.reserve) state.reserve += choice.reserve;
+      state.history.push({ phase:'career', round:state.careerRound, event:event.title, choice:choice.title, feedback:choice.feedback });
+      document.querySelectorAll('[data-career-choice]').forEach(b => b.disabled = true);
+      const box = $('careerFeedback');
+      box.innerHTML = `<strong>${choice.title}</strong><div class="delta-list">${deltaText(choice.effects)}</div><p>${choice.feedback}</p><button class="primary-btn" id="nextCareerBtn" type="button">${state.careerRound===careerEvents.length?'查看人生報告':'下一個月'}</button>`;
+      box.classList.add('show'); $('nextCareerBtn').addEventListener('click', beginCareerRound);
+    }
+
+    function advisorTips() {
+      const tips = [];
+      if (state.energy < 35) tips.push('你的體力偏低。下一次可嘗試減少一級兼職時數，或在重要考核前預留休息。');
+      else tips.push('你保留了一定體力，代表計劃沒有只看金錢。');
+      if (state.study < 65) tips.push('學業進度仍有改善空間。可把「完成一項作品／考核」放在加班之前。');
+      else tips.push('你的學業進度足以支持求職，但仍要把成果整理成作品或CV證據。');
+      if (state.debt > 0) tips.push(`你有${moneyFmt.format(state.debt)}模擬貸款；貸款不是失敗，但需要了解利息、還款期和替代方案。`);
+      else tips.push('你沒有使用模擬貸款，但仍要確認現金是否足以應付長期學費和生活開支。');
+      if (state.learningCorrect < 6) tips.push('部分資料查證概念仍未掌握；建議重玩並留意每個「先預測」及學習關卡的解釋。');
+      else tips.push('你掌握了大部分查證概念，下一步是用真實課程資料再做一次判斷。');
+      return tips;
+    }
+
+    function showFinal() {
+      showScreen('finalScreen', '挑戰完成');
+      const c = getCourse();
+      const lastStudy = [...state.history].reverse().find(h => h.phase === 'study');
+      $('finalSummary').innerHTML = `<div class="tag">遊戲結果</div><h3 style="margin-top:12px">${directions[state.direction].icon} ${directions[state.direction].name}路線</h3><div class="report-list"><div class="report-row"><span>模擬課程</span><b>${c.title}</b></div><div class="report-row"><span>每週兼職</span><b>${state.workHours}小時</b></div><div class="report-row"><span>課程結果</span><b>${state.graduation.title}</b></div><div class="report-row"><span>第一份工作</span><b>${state.selectedJob.title}</b></div><div class="report-row"><span>期末現金</span><b>${moneyFmt.format(state.money)}</b></div><div class="report-row"><span>緊急儲備</span><b>${moneyFmt.format(state.reserve)}</b></div><div class="report-row"><span>模擬貸款</span><b>${moneyFmt.format(state.debt)}</b></div><div class="report-row"><span>最後能力</span><b>${Math.round(state.skill)}/100</b></div><div class="report-row"><span>學習關卡</span><b>${state.learningCorrect}/9</b></div></div><div class="advisor"><strong>遊戲顧問分析（規則式，並非真實AI）</strong><ul>${advisorTips().map(t=>`<li>${t}</li>`).join('')}</ul></div><div class="advisor" style="margin-top:12px"><strong>完成遊戲後應該記得</strong><ul><li>兼職收入需要用時間和體力交換。</li><li>貸款會增加可用現金，也會增加欠款。</li><li>AI的肯定語氣不是證據，課程和薪酬要分開查證。</li><li>資歷、技能、作品及經驗會共同影響職位選擇。</li></ul></div><p class="source-note">最終收入不是由學歷單獨決定。本遊戲同時計算課程、能力、成果和經驗。</p>`;
+      $('wsCourse').value = `${c.title}（${c.level.split('｜')[0]}）`;
+      $('wsJob').value = state.selectedJob.title;
+      $('wsDecision').value = lastStudy ? `${lastStudy.event}：我選擇了「${lastStudy.choice}」。` : '';
+      $('wsClaim').value = '「完成課程後一定可以月入$25,000」不能直接相信，因為課程不會保證職位或薪酬。';
+      $('wsVerify').value = '我要到院校官方網站或iPASS查證課程名稱、入學要求、學費及資歷級別。';
+    }
+
+    function aiPrompt() {
+      const c = getCourse();
+      return `你是職涯反思助手。以下是我在香港半工讀模擬遊戲的結果：\n方向：${directions[state.direction].name}\n課程：${c.title}\n每星期兼職：${state.workHours}小時\n課程結果：${state.graduation.title}\n學業進度：${Math.round(state.study)}/100\n職涯能力：${Math.round(state.skill)}/100\n學習關卡：${state.learningCorrect}/9\n選擇的職位：${state.selectedJob.title}\n貸款：${moneyFmt.format(state.debt)}\n\n請用簡單中文：1. 指出我做得較好的一個決定；2. 指出一個風險；3. 提出兩個可行的改善方案；4. 把你使用的資料分成「需要官方來源查證」和「只是建議」。不要假設遊戲薪酬是真實起薪，並提醒我到官方網站核對課程、資助和職位資料。`;
+    }
+
+    function toast(message) { const el=$('toast'); el.textContent=message; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2200); }
+    function resetGame() { state = freshState(); renderSetup(); showScreen('introScreen','準備開始'); }
+
+    $('startBtn').addEventListener('click', () => { renderSetup(); showScreen('setupScreen','選擇路線'); });
+    $('howBtn').addEventListener('click', () => document.querySelector('.hero-card').scrollIntoView({behavior:'smooth', block:'center'}));
+    $('launchBtn').addEventListener('click', () => { state.round=0; state.money=5000; state.energy=72; state.study=54; state.skill=24; state.debt=0; state.reserve=0; state.history=[]; state.learningCorrect=0; state.learningAnswered=0; beginRound(); });
+    $('resetTop').addEventListener('click', () => { if (confirm('確定重新開始？目前的遊戲進度會消失。')) resetGame(); });
+    $('printBtn').addEventListener('click', () => window.print());
+    $('playAgainBtn').addEventListener('click', resetGame);
+    $('copyPromptBtn').addEventListener('click', async () => { try { await navigator.clipboard.writeText(aiPrompt()); toast('AI反思提示已複製'); } catch { toast('未能自動複製，請使用瀏覽器複製功能'); } });
+    state = freshState(); renderSetup();
+  </script>
+</body>
+</html>
